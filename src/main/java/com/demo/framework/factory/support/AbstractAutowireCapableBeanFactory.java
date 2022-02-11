@@ -1,7 +1,11 @@
 package com.demo.framework.factory.support;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.demo.framework.BeansException;
+import com.demo.framework.factory.PropertyValue;
+import com.demo.framework.factory.PropertyValues;
 import com.demo.framework.factory.config.BeanDefinition;
+import com.demo.framework.factory.config.BeanReference;
 
 import java.lang.reflect.Constructor;
 
@@ -14,6 +18,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         Object bean;
         try {
             bean = createBeanInstance(beanName, beanDefinition, args);
+            // 给 Bean 填充属性
+            applyPropertyValues(beanName, bean, beanDefinition);
         } catch (BeansException e) {
             throw new BeansException("Instantiation of bean failed", e);
         }
@@ -21,12 +27,30 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         return bean;
     }
 
+    protected void applyPropertyValues(String beanName, Object bean, BeanDefinition beanDefinition) {
+        try {
+            PropertyValues propertyValues = beanDefinition.getPropertyValues();
+            for (PropertyValue propertyValue : propertyValues.getList()) {
+                String name = propertyValue.getName();
+                Object value = propertyValue.getValue();
+                // 填充引用对象
+                if (value instanceof BeanReference) {
+                    BeanReference beanReference = (BeanReference) value;
+                    value = getBean(beanReference.getBeanName());
+                }
+                BeanUtil.setFieldValue(bean, name, value);
+            }
+        } catch (Exception e) {
+            throw new BeansException("Error setting property value。beanName:" + beanName);
+        }
+    }
+
     protected Object createBeanInstance(String beanName, BeanDefinition beanDefinition, Object[] args) {
         Constructor<?> cons = null;
         Class<?> clazz = beanDefinition.getBeanClass();
         Constructor<?>[] declaredConstructors = clazz.getDeclaredConstructors();
         for (Constructor<?> constructor : declaredConstructors) {
-            if (constructor != null && constructor.getParameterTypes().length == args.length) {
+            if (args != null && constructor != null && constructor.getParameterTypes().length == args.length) {
                 cons = constructor;
                 break;
             }
