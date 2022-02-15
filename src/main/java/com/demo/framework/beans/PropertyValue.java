@@ -1,4 +1,4 @@
-package com.demo.framework.factory;
+package com.demo.framework.beans;
 
 public class PropertyValue {
 

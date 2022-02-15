@@ -1,10 +1,10 @@
 package com.test.framework;
 
-import com.demo.framework.factory.PropertyValue;
-import com.demo.framework.factory.PropertyValues;
-import com.demo.framework.factory.config.BeanDefinition;
-import com.demo.framework.factory.config.BeanReference;
-import com.demo.framework.factory.support.DefaultListableBeanFactory;
+import com.demo.framework.beans.PropertyValue;
+import com.demo.framework.beans.PropertyValues;
+import com.demo.framework.beans.factory.config.BeanDefinition;
+import com.demo.framework.beans.factory.config.BeanReference;
+import com.demo.framework.beans.factory.support.DefaultListableBeanFactory;
 import com.test.framework.bean.UserDao;
 import com.test.framework.bean.UserService;
 import org.junit.Test;

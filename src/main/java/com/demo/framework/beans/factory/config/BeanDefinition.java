@@ -1,7 +1,6 @@
-package com.demo.framework.factory.config;
+package com.demo.framework.beans.factory.config;
 
-import com.demo.framework.factory.PropertyValue;
-import com.demo.framework.factory.PropertyValues;
+import com.demo.framework.beans.PropertyValues;
 
 public class BeanDefinition {
 

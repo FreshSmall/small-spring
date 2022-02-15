@@ -1,8 +1,8 @@
-package com.demo.framework.factory.support;
+package com.demo.framework.beans.factory.support;
 
-import com.demo.framework.BeansException;
-import com.demo.framework.factory.BeanFactory;
-import com.demo.framework.factory.config.BeanDefinition;
+import com.demo.framework.beans.BeansException;
+import com.demo.framework.beans.factory.BeanFactory;
+import com.demo.framework.beans.factory.config.BeanDefinition;
 
 /**
  * BeanDefinition 注册表接口

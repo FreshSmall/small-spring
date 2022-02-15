@@ -1,6 +1,6 @@
-package com.demo.framework.factory.support;
+package com.demo.framework.beans.factory.support;
 
-import com.demo.framework.factory.config.SingletonBeanRegistry;
+import com.demo.framework.beans.factory.config.SingletonBeanRegistry;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

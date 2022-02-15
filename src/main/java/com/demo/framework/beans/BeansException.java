@@ -1,4 +1,4 @@
-package com.demo.framework;
+package com.demo.framework.beans;
 
 public class BeansException extends RuntimeException {
 

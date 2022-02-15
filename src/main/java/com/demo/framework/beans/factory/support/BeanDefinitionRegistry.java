@@ -1,6 +1,6 @@
-package com.demo.framework.factory.support;
+package com.demo.framework.beans.factory.support;
 
-import com.demo.framework.factory.config.BeanDefinition;
+import com.demo.framework.beans.factory.config.BeanDefinition;
 
 /**
  *

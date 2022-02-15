@@ -1,4 +1,4 @@
-package com.demo.framework.factory.config;
+package com.demo.framework.beans.factory.config;
 
 public class BeanReference {
 
