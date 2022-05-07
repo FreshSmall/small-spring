@@ -1,6 +1,6 @@
 package com.demo.framework.beans.factory.support;
 
-import com.demo.framework.beans.factory.BeansException;
+import com.demo.framework.beans.BeansException;
 import com.demo.framework.beans.factory.config.BeanDefinition;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;

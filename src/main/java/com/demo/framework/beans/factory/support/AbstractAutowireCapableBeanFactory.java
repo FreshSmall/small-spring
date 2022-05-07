@@ -1,11 +1,11 @@
-package com.demo.framework.factory.support;
+package com.demo.framework.beans.factory.support;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.demo.framework.BeansException;
-import com.demo.framework.factory.PropertyValue;
-import com.demo.framework.factory.PropertyValues;
-import com.demo.framework.factory.config.BeanDefinition;
-import com.demo.framework.factory.config.BeanReference;
+import com.demo.framework.beans.BeansException;
+import com.demo.framework.beans.PropertyValue;
+import com.demo.framework.beans.PropertyValues;
+import com.demo.framework.beans.factory.config.BeanDefinition;
+import com.demo.framework.beans.factory.config.BeanReference;
 
 import java.lang.reflect.Constructor;
 
