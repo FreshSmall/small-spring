@@ -1,36 +1,62 @@
 package com.test.framework;
 
-import com.demo.framework.beans.PropertyValue;
-import com.demo.framework.beans.PropertyValues;
-import com.demo.framework.beans.factory.config.BeanDefinition;
-import com.demo.framework.beans.factory.config.BeanReference;
+import cn.hutool.core.io.IoUtil;
 import com.demo.framework.beans.factory.support.DefaultListableBeanFactory;
-import com.test.framework.bean.UserDao;
+import com.demo.framework.beans.factory.xml.XmlBeanDefinitionReader;
+import com.demo.framework.core.io.DefaultResourceLoader;
+import com.demo.framework.core.io.Resource;
 import com.test.framework.bean.UserService;
+import org.junit.Before;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class ApiTest {
 
+    private DefaultResourceLoader resourceLoader;
+
+    @Before
+    public void init() {
+        resourceLoader = new DefaultResourceLoader();
+    }
+
     @Test
-    public void test_BeanFactory() {
+    public void test_classpath() throws IOException {
+        Resource resource = resourceLoader.getResource("classpath:important.properties");
+        InputStream inputStream = resource.getInputStream();
+        String content = IoUtil.readUtf8(inputStream);
+        System.out.println(content);
+    }
+
+    @Test
+    public void test_file() throws IOException {
+        Resource resource = resourceLoader.getResource("src/test/resources/important.properties");
+        InputStream inputStream = resource.getInputStream();
+        String content = IoUtil.readUtf8(inputStream);
+        System.out.println(content);
+    }
+
+    @Test
+    public void test_url() throws IOException {
+        Resource resource = resourceLoader.getResource("https://raw.githubusercontent.com/fuzhengwei/small-spring/main/small-spring-step-05/src/test/resources/important.properties");
+        InputStream inputStream = resource.getInputStream();
+        String content = IoUtil.readUtf8(inputStream);
+        System.out.println(content);
+    }
+
+    @Test
+    public void test_xml() {
         // 1.初始化 BeanFactory
         DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
 
-        // 注册 userDao
-        BeanDefinition beanDefinition = new BeanDefinition(UserDao.class);
-        beanFactory.registerBeanDefinition("userDao", beanDefinition);
+        // 2. 读取配置文件&注册Bean
+        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
+        reader.loadBeanDefinitions("classpath:spring.xml");
 
-        // 增加propertyValue
-        PropertyValues propertyValues = new PropertyValues();
-        propertyValues.addPropertyValue(new PropertyValue("uId", "10001"));
-        propertyValues.addPropertyValue(new PropertyValue("userDao", new BeanReference("userDao")));
-        // 2.注册 bean
-        BeanDefinition beanDefinition_1 = new BeanDefinition(UserService.class, propertyValues);
-        beanFactory.registerBeanDefinition("userService", beanDefinition_1);
-
-        // 5. UserService 获取bean
-        UserService userService = (UserService) beanFactory.getBean("userService");
-        userService.queryUserInfo();
-
+        // 3. 获取Bean对象调用方法
+        UserService userService = beanFactory.getBean("userService", UserService.class);
+        String result = userService.queryUserInfo();
+        System.out.println("测试结果：" + result);
     }
 }
