@@ -3,7 +3,7 @@ package com.demo.framework.factory.support;
 import com.demo.framework.factory.config.BeanDefinition;
 
 /**
- *
+ * BeanDefinition 注册表接口
  */
 public interface BeanDefinitionRegistry {
 

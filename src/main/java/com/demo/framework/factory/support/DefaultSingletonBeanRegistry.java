@@ -5,6 +5,10 @@ import com.demo.framework.factory.config.SingletonBeanRegistry;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * 在容器上下文中管理单例 bean 的注册表
+ *
+ */
 public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
 
     private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>();

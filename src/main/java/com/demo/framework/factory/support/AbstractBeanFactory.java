@@ -5,7 +5,7 @@ import com.demo.framework.factory.BeanFactory;
 import com.demo.framework.factory.config.BeanDefinition;
 
 /**
- * BeanDefinition 注册表接口
+ * AbstractBeanFactory 是一个抽象类，提供了 BeanFactory 的基本实现
  */
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
 
