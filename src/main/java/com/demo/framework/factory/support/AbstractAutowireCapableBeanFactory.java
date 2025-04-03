@@ -14,14 +14,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         Object bean;
         try {
             bean = createBeanInstance(beanName, beanDefinition, args);
-        } catch (BeansException e) {
+        } catch (Exception e) {
             throw new BeansException("Instantiation of bean failed", e);
         }
         addSingleton(beanName, bean);
         return bean;
     }
 
-    protected Object createBeanInstance(String beanName, BeanDefinition beanDefinition, Object[] args) {
+    protected Object createBeanInstance(String beanName, BeanDefinition beanDefinition, Object[] args) throws Exception {
         Constructor<?> cons = null;
         Class<?> clazz = beanDefinition.getBeanClass();
         Constructor<?>[] declaredConstructors = clazz.getDeclaredConstructors();

@@ -9,6 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 public class SimpleInstantiationStrategy implements InstantiationStrategy {
     @Override
     public Object instantiate(BeanDefinition beanDefinition, String beanName, Constructor<?> ctor, Object[] args) throws BeansException {
+        System.out.println("SimpleInstantiationStrategy: " + beanName);
         Class<?> clazz = beanDefinition.getBeanClass();
         try {
             if (ctor != null) {
@@ -16,7 +17,8 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
             } else {
                 return clazz.getDeclaredConstructor().newInstance();
             }
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                 NoSuchMethodException e) {
             throw new BeansException("Failed to instantiate [" + clazz.getName() + "]", e);
         }
     }
