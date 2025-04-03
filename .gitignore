@@ -1,3 +1,5 @@
+.vscode/
+.cursor/
 .idea/
 *.iml
 target/
