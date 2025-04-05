@@ -5,9 +5,16 @@ import com.demo.framework.beans.PropertyValues;
 import com.demo.framework.beans.factory.config.BeanDefinition;
 import com.demo.framework.beans.factory.config.BeanReference;
 import com.demo.framework.beans.factory.support.DefaultListableBeanFactory;
+import com.demo.framework.core.io.DefaultResourceLoader;
+import com.demo.framework.core.io.Resource;
 import com.test.framework.bean.UserDao;
 import com.test.framework.bean.UserService;
 import org.junit.Test;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class ApiTest {
 
@@ -32,5 +39,50 @@ public class ApiTest {
         UserService userService = (UserService) beanFactory.getBean("userService");
         userService.queryUserInfo();
 
+    }
+
+    @Test
+    public void test_classpath() throws IOException {
+        // 创建资源加载器
+        DefaultResourceLoader resourceLoader = new DefaultResourceLoader();
+
+        // 加载 classpath 资源
+        Resource resource = resourceLoader.getResource("classpath:important.properties");
+        System.out.println("Classpath Resource: " + resource.getClass());
+        printResourceContent(resource);
+    }
+
+    @Test
+    public void test_file() throws IOException {
+        // 创建资源加载器
+        DefaultResourceLoader resourceLoader = new DefaultResourceLoader();
+
+        // 加载文件系统资源
+        // 获取当前项目根路径
+        String rootPath = new File("").getAbsolutePath();
+        Resource resource = resourceLoader.getResource(rootPath + "/src/test/resources/important.properties");
+        System.out.println("File System Resource: " + resource.getClass());
+        printResourceContent(resource);
+    }
+
+    @Test
+    public void test_url() throws IOException {
+        // 创建资源加载器
+        DefaultResourceLoader resourceLoader = new DefaultResourceLoader();
+        // 加载 URL 资源
+        // 这里使用 GitHub 上的一个公开文件作为示例
+        Resource resource = resourceLoader.getResource("https://raw.githubusercontent.com/fuzhengwei/small-spring/main/README.md");
+        System.out.println("URL Resource: " + resource.getClass());
+        printResourceContent(resource);
+    }
+
+    private void printResourceContent(Resource resource) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
+            String line;
+            System.out.println("Resource Content:");
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+        }
     }
 }
