@@ -90,8 +90,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
             // 获取 xml 中的属性信息
             NodeList childNodes = ele.getChildNodes();
             for (int j = 0; j < childNodes.getLength(); j++) {
-                // 异常情况退出
-                if ((Element) childNodes.item(j) == null) {
+                // 只处理 Element 类型的节点
+                if (!(childNodes.item(j) instanceof Element)) {
                     continue;
                 }
                 Element node = (Element) childNodes.item(j);

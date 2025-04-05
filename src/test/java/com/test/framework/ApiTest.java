@@ -5,6 +5,7 @@ import com.demo.framework.beans.PropertyValues;
 import com.demo.framework.beans.factory.config.BeanDefinition;
 import com.demo.framework.beans.factory.config.BeanReference;
 import com.demo.framework.beans.factory.support.DefaultListableBeanFactory;
+import com.demo.framework.beans.factory.xml.XmlBeanDefinitionReader;
 import com.demo.framework.core.io.DefaultResourceLoader;
 import com.demo.framework.core.io.Resource;
 import com.test.framework.bean.UserDao;
@@ -15,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 
 public class ApiTest {
 
@@ -84,5 +86,53 @@ public class ApiTest {
                 System.out.println(line);
             }
         }
+    }
+
+    @Test
+    public void test_xml() {
+        // 1.初始化 BeanFactory
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+
+        // 2. 读取配置文件&注册Bean
+        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
+        reader.loadBeanDefinitions("classpath:spring.xml");
+
+        // 3. 获取Bean对象调用方法
+        UserService userService = (UserService) beanFactory.getBean("userService");
+        userService.queryUserInfo();
+    }
+
+    @Test
+    public void test_xml_file() {
+        // 1.初始化 BeanFactory
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+
+        // 2. 读取配置文件&注册Bean
+        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
+        // 获取当前项目根路径
+        String rootPath = new File("").getAbsolutePath();
+        reader.loadBeanDefinitions(rootPath + "/src/test/resources/spring.xml");
+
+        // 3. 获取Bean对象调用方法
+        UserService userService = (UserService) beanFactory.getBean("userService");
+        userService.queryUserInfo();
+    }
+
+    @Test
+    public void test_xml_url() throws Exception {
+        // 1.初始化 BeanFactory
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+
+        // 2. 读取配置文件&注册Bean
+        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
+        // 获取当前项目根路径
+        String rootPath = new File("").getAbsolutePath();
+        // 使用 URL 格式加载文件
+        URL url = new URL("file:" + rootPath + "/src/test/resources/spring.xml");
+        reader.loadBeanDefinitions(url.toString());
+
+        // 3. 获取Bean对象调用方法
+        UserService userService = (UserService) beanFactory.getBean("userService");
+        userService.queryUserInfo();
     }
 }
