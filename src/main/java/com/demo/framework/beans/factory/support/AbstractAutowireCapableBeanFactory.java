@@ -4,12 +4,15 @@ import cn.hutool.core.bean.BeanUtil;
 import com.demo.framework.beans.BeansException;
 import com.demo.framework.beans.PropertyValue;
 import com.demo.framework.beans.PropertyValues;
+import com.demo.framework.beans.factory.DisposableBean;
+import com.demo.framework.beans.factory.InitializingBean;
 import com.demo.framework.beans.factory.config.AutowireCapableBeanFactory;
 import com.demo.framework.beans.factory.config.BeanDefinition;
 import com.demo.framework.beans.factory.config.BeanPostProcessor;
 import com.demo.framework.beans.factory.config.BeanReference;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,8 +43,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         } catch (BeansException e) {
             throw new BeansException("Instantiation of bean failed", e);
         }
+        // 注册实现销毁 bean 的钩子
+        registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
         addSingleton(beanName, bean);
         return bean;
+    }
+
+    private void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
+        if ("".equals(beanDefinition.getDestroyMethodName()) && bean instanceof DisposableBean) {
+            // registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition));
+        }
     }
 
     /**
@@ -71,8 +82,21 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
      * @param bean
      * @param beanDefinition
      */
-    private void invokeInitMethods(String beanName, Object bean, BeanDefinition beanDefinition) {
-        // 待实现
+    private void invokeInitMethods(String beanName, Object bean, BeanDefinition beanDefinition) throws BeansException {
+        // 1. 实现接口 InitializingBean
+        if (bean instanceof InitializingBean) {
+            ((InitializingBean) bean).afterPropertiesSet();
+        }
+        // 2. 配置信息 init-method
+        String initMethodName = beanDefinition.getInitMethodName();
+        if (!"".equals(initMethodName)) {
+            try {
+                Method initMethod = beanDefinition.getBeanClass().getMethod(initMethodName);
+                initMethod.invoke(bean);
+            } catch (Exception e) {
+                throw new BeansException("Could not find an init method named '" + initMethodName + "' on bean with name '" + beanName + "'");
+            }
+        }
     }
 
     protected void applyPropertyValues(String beanName, Object bean, BeanDefinition beanDefinition) {
