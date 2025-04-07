@@ -4,6 +4,10 @@ import cn.hutool.core.bean.BeanUtil;
 import com.demo.framework.beans.BeansException;
 import com.demo.framework.beans.PropertyValue;
 import com.demo.framework.beans.PropertyValues;
+import com.demo.framework.beans.factory.Aware;
+import com.demo.framework.beans.factory.BeanClassLoaderAware;
+import com.demo.framework.beans.factory.BeanFactoryAware;
+import com.demo.framework.beans.factory.BeanNameAware;
 import com.demo.framework.beans.factory.DisposableBean;
 import com.demo.framework.beans.factory.InitializingBean;
 import com.demo.framework.beans.factory.config.AutowireCapableBeanFactory;
@@ -50,8 +54,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
     private void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
-        if ("".equals(beanDefinition.getDestroyMethodName()) && bean instanceof DisposableBean) {
-             registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition));
+        if (!"".equals(beanDefinition.getDestroyMethodName()) ||  bean instanceof DisposableBean) {
+            registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition));
         }
     }
 
@@ -64,12 +68,21 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
      * @return
      */
     private Object initializeBean(String beanName, Object bean, BeanDefinition beanDefinition) {
+        // invokeAwareMethods
+        if (bean instanceof Aware) {
+            if (bean instanceof BeanFactoryAware) {
+                ((BeanFactoryAware)bean).setBeanFactory(this);
+            }else if(bean instanceof BeanClassLoaderAware){
+                ((BeanClassLoaderAware)bean).setBeanClazzLoader(getBeanClassLoader());
+            }else if(bean instanceof BeanNameAware){
+                ((BeanNameAware)bean).setBeanName(beanName);
+            }
+        }
+
         // 1. 执行 BeanPostProcessor Before 处理
         Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
-
         // 2. 待实现初始化方法 invokeInitMethods(beanName, wrappedBean, beanDefinition);
         invokeInitMethods(beanName, wrappedBean, beanDefinition);
-
         // 3. 执行 BeanPostProcessor After 处理
         wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
         return wrappedBean;

@@ -1,5 +1,6 @@
 package com.demo.framework.beans.factory.support;
 
+import cn.hutool.core.util.ClassUtil;
 import com.demo.framework.beans.BeansException;
 import com.demo.framework.beans.factory.BeanFactory;
 import com.demo.framework.beans.factory.config.BeanDefinition;
@@ -45,6 +46,10 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 
         BeanDefinition beanDefinition = getBeanDefinition(name);
         return createBean(name, beanDefinition, args);
+    }
+
+    public ClassLoader getBeanClassLoader() {
+        return ClassUtil.getClassLoader();
     }
 
     protected abstract BeanDefinition getBeanDefinition(String beanName) throws BeansException;

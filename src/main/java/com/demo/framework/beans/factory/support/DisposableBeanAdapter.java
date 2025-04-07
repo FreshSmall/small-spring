@@ -33,7 +33,7 @@ public class DisposableBeanAdapter implements DisposableBean {
             ((DisposableBean) bean).destroy();
         }
         // 2. 配置信息 init-method
-        if (!"".equals(destroyMethodName) && bean instanceof DisposableBean && destroyMethodName.equals("destroy")) {
+        if (!"".equals(destroyMethodName) || bean instanceof DisposableBean) {
             try {
                 Method initMethod = bean.getClass().getMethod(destroyMethodName);
                 initMethod.invoke(bean);

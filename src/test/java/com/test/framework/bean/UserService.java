@@ -1,10 +1,14 @@
 package com.test.framework.bean;
 
 import com.demo.framework.beans.BeansException;
-import com.demo.framework.beans.factory.DisposableBean;
-import com.demo.framework.beans.factory.InitializingBean;
+import com.demo.framework.beans.factory.BeanClassLoaderAware;
+import com.demo.framework.beans.factory.BeanFactory;
+import com.demo.framework.beans.factory.BeanFactoryAware;
+import com.demo.framework.beans.factory.BeanNameAware;
+import com.demo.framework.context.ApplicationContext;
+import com.demo.framework.context.ApplicationContextAware;
 
-public class UserService implements InitializingBean, DisposableBean {
+public class UserService implements BeanNameAware, BeanClassLoaderAware, ApplicationContextAware, BeanFactoryAware {
 
     private String name;
 
@@ -14,6 +18,9 @@ public class UserService implements InitializingBean, DisposableBean {
     private String location;
 
     private UserDao userDao;
+
+    private ApplicationContext applicationContext;
+    private BeanFactory beanFactory;
 
     public String queryUserInfo() {
         return userDao.queryUserName(uId) + ", 公司：" + company + ", 地点：" + location;
@@ -52,12 +59,30 @@ public class UserService implements InitializingBean, DisposableBean {
     }
 
     @Override
-    public void destroy() throws Exception {
-        System.out.println("执行：UserService.destroy()");
+    public void setBeanName(String beanName) {
+        System.out.println("beanName:" + beanName);
     }
 
     @Override
-    public void afterPropertiesSet() throws BeansException {
-        System.out.println("执行：UserService.afterPropertiesSet()");
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    @Override
+    public void setBeanClazzLoader(ClassLoader loader) {
+        System.out.println("ClassLoader：" + location);
+    }
+
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
+
+    public BeanFactory getBeanFactory() {
+        return beanFactory;
     }
 }
