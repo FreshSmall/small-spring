@@ -1,6 +1,10 @@
 package com.test.framework.bean;
 
-public class UserService {
+import com.demo.framework.beans.BeansException;
+import com.demo.framework.beans.factory.DisposableBean;
+import com.demo.framework.beans.factory.InitializingBean;
+
+public class UserService implements InitializingBean, DisposableBean {
 
     private String name;
 
@@ -47,4 +51,13 @@ public class UserService {
         this.location = location;
     }
 
+    @Override
+    public void destroy() throws Exception {
+        System.out.println("执行：UserService.destroy()");
+    }
+
+    @Override
+    public void afterPropertiesSet() throws BeansException {
+        System.out.println("执行：UserService.afterPropertiesSet()");
+    }
 }
