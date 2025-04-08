@@ -49,12 +49,18 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         }
         // 注册实现销毁 bean 的钩子
         registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
-        addSingleton(beanName, bean);
+        if (beanDefinition.isSingleton()) {
+            addSingleton(beanName, bean);
+        }
         return bean;
     }
 
     private void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
-        if (!"".equals(beanDefinition.getDestroyMethodName()) ||  bean instanceof DisposableBean) {
+        // 非单例模式不执行销毁方法
+        if (!beanDefinition.isSingleton()) {
+            return;
+        }
+        if (!"".equals(beanDefinition.getDestroyMethodName()) || bean instanceof DisposableBean) {
             registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition));
         }
     }
@@ -71,11 +77,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         // invokeAwareMethods
         if (bean instanceof Aware) {
             if (bean instanceof BeanFactoryAware) {
-                ((BeanFactoryAware)bean).setBeanFactory(this);
-            }else if(bean instanceof BeanClassLoaderAware){
-                ((BeanClassLoaderAware)bean).setBeanClazzLoader(getBeanClassLoader());
-            }else if(bean instanceof BeanNameAware){
-                ((BeanNameAware)bean).setBeanName(beanName);
+                ((BeanFactoryAware) bean).setBeanFactory(this);
+            } else if (bean instanceof BeanClassLoaderAware) {
+                ((BeanClassLoaderAware) bean).setBeanClazzLoader(getBeanClassLoader());
+            } else if (bean instanceof BeanNameAware) {
+                ((BeanNameAware) bean).setBeanName(beanName);
             }
         }
 

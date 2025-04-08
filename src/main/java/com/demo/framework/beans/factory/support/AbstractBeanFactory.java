@@ -3,6 +3,7 @@ package com.demo.framework.beans.factory.support;
 import cn.hutool.core.util.ClassUtil;
 import com.demo.framework.beans.BeansException;
 import com.demo.framework.beans.factory.BeanFactory;
+import com.demo.framework.beans.factory.FactoryBean;
 import com.demo.framework.beans.factory.config.BeanDefinition;
 
 /**
@@ -14,7 +15,7 @@ import com.demo.framework.beans.factory.config.BeanDefinition;
  * @team wuhan operational dev.
  * @date: 2025/4/6 00:15
  */
-public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
+public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements BeanFactory {
 
     @Override
     public Object getBean(String name) throws BeansException {
@@ -38,15 +39,27 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
      * @param args
      * @return
      */
-    protected Object doGetBean(String name, final Object... args) {
-        Object bean = getSingleton(name);
-        if (bean != null) {
+    protected <T> T doGetBean(String name, final Object... args) {
+        Object  shareInstance = getSingleton(name);
+        if (shareInstance != null) {
+            return (T)getObjectForBeanInstance(shareInstance,name);
+        }
+        BeanDefinition beanDefinition = getBeanDefinition(name);
+        Object bean = createBean(name, beanDefinition, args);
+        return (T) getObjectForBeanInstance(bean, name);
+    }
+
+    private Object getObjectForBeanInstance(Object bean, String name) {
+        if (!(bean instanceof FactoryBean)) {
             return bean;
         }
-
-        BeanDefinition beanDefinition = getBeanDefinition(name);
-        return createBean(name, beanDefinition, args);
+        Object object = getCachedObjectForFactoryBean(name);
+        if (object == null) {
+            object = getObjectFromFactoryBean((FactoryBean) bean, name);
+        }
+        return object;
     }
+
 
     public ClassLoader getBeanClassLoader() {
         return ClassUtil.getClassLoader();

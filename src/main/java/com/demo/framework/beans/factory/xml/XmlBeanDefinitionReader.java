@@ -99,11 +99,16 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
             // 增加初始化和销毁的方法
             String initMethodName = ele.getAttribute("init-method");
             String destroyMethodName = ele.getAttribute("destroy-method");
+            String beanScope = ele.getAttribute("scope");
             // 创建Bean定义对象
             Class<?> clazz = Class.forName(className);
             BeanDefinition beanDefinition = new BeanDefinition(clazz);
             beanDefinition.setInitMethodName(initMethodName);
             beanDefinition.setDestroyMethodName(destroyMethodName);
+            if (StrUtil.isNotEmpty(beanScope)) {
+                beanDefinition.setScope(beanScope);
+            }
+
             // 获取 xml 中的属性信息
             NodeList childNodes = ele.getChildNodes();
             for (int j = 0; j < childNodes.getLength(); j++) {
