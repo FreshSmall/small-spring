@@ -37,13 +37,13 @@ public abstract class AbstractApplicationEventMulticaster implements Application
     }
 
     protected Collection<ApplicationListener<ApplicationEvent>> getApplicationListeners(ApplicationEvent event) {
-        LinkedList<ApplicationListener<ApplicationEvent>> allListeners = new LinkedList<>(applicationListeners);
-        for (ApplicationListener<ApplicationEvent> listener : allListeners) {
+        LinkedList<ApplicationListener<ApplicationEvent>> result = new LinkedList<>();
+        for (ApplicationListener<ApplicationEvent> listener : applicationListeners) {
             if (supportsEvent(listener, event)) {
-                allListeners.add(listener);
+                result.add(listener);
             }
         }
-        return allListeners;
+        return result;
     }
 
     protected boolean supportsEvent(ApplicationListener<ApplicationEvent> applicationListener, ApplicationEvent event) {

@@ -6,6 +6,7 @@ public class CustomEventListener implements ApplicationListener<CustomEvent> {
 
     @Override
     public void onApplicationEvent(CustomEvent event) {
-        System.out.println("Received custom event - " + event.getMessage()); 
+        System.out.println("Received custom event id： " + event.getId());
+        System.out.println("Received custom event message： " + event.getMessage());
     }
 }

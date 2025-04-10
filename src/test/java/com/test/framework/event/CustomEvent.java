@@ -7,7 +7,7 @@ public class CustomEvent extends ApplicationEvent {
     private Long id;
     private String message;
 
-    public CustomEvent(Object source, Long is, String message) {
+    public CustomEvent(Object source, Long id, String message) {
         super(source);
         this.id = id;
         this.message = message;

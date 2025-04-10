@@ -10,6 +10,6 @@ public class ApiTest {
     @Test
     public void test() {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
-        applicationContext.publishEvent(new CustomEvent(applicationContext, 1019129009086763L, "成功了！")); 
+        applicationContext.publishEvent(new CustomEvent(applicationContext, 10191290090867633L, "成功了1123123！")); 
     }
 }
