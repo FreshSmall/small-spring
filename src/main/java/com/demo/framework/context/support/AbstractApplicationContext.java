@@ -49,22 +49,22 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
         // 对象都能感知所属的 ApplicationContext
         beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
 
-        // 3. 在 Bean 实例化之前，执行 BeanFactoryPostProcessor
+        // 4. 在 Bean 实例化之前，执行 BeanFactoryPostProcessor
         invokeBeanFactoryPostProcessors(beanFactory);
 
-        // 4. BeanPostProcessor 需要提前于其他 Bean 对象实例化之前执行注册操作
+        // 5. BeanPostProcessor 需要提前于其他 Bean 对象实例化之前执行注册操作
         registerBeanPostProcessors(beanFactory);
 
-        // 5. 提前实例化单例 Bean 对象
+        // 6. 提前实例化单例 Bean 对象
         beanFactory.preInstantiateSingletons();
 
-        // 6.初始化事件发布器
+        // 7.初始化事件发布器
         initApplicationEventMulticaster();
 
-        // 7.注册事件监听器
+        // 8.注册事件监听器
         registerListeners();
 
-        // 8.初始化非延迟加载的单例 Bean
+        // 9.初始化非延迟加载的单例 Bean
         finishRefresh();
     }
 
