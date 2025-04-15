@@ -5,6 +5,11 @@ import com.demo.framework.beans.BeansException;
 import com.demo.framework.beans.factory.BeanFactory;
 import com.demo.framework.beans.factory.FactoryBean;
 import com.demo.framework.beans.factory.config.BeanDefinition;
+import com.demo.framework.beans.factory.config.BeanPostProcessor;
+import com.demo.framework.beans.factory.config.ConfigurableBeanFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 抽象的Bean工厂
@@ -15,7 +20,10 @@ import com.demo.framework.beans.factory.config.BeanDefinition;
  * @team wuhan operational dev.
  * @date: 2025/4/6 00:15
  */
-public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements BeanFactory {
+public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
+
+    private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<BeanPostProcessor>();
+
 
     @Override
     public Object getBean(String name) throws BeansException {
@@ -60,6 +68,19 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
         return object;
     }
 
+    /**
+     * 添加 BeanPostProcessor
+     *
+     * @param beanPostProcessor
+     */
+    public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
+        this.beanPostProcessors.remove(beanPostProcessor);
+        this.beanPostProcessors.add(beanPostProcessor);
+    }
+
+    public List<BeanPostProcessor> getBeanPostProcessors() {
+        return beanPostProcessors;
+    }
 
     public ClassLoader getBeanClassLoader() {
         return ClassUtil.getClassLoader();

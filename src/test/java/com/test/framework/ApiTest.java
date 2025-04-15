@@ -8,7 +8,7 @@ import com.test.framework.event.CustomEvent;
 public class ApiTest {
 
     @Test
-    public void test() {
+    public void test_aop() {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
         applicationContext.publishEvent(new CustomEvent(applicationContext, 10191290090867633L, "成功了1123123！")); 
     }

@@ -14,6 +14,7 @@ import com.demo.framework.beans.factory.config.AutowireCapableBeanFactory;
 import com.demo.framework.beans.factory.config.BeanDefinition;
 import com.demo.framework.beans.factory.config.BeanPostProcessor;
 import com.demo.framework.beans.factory.config.BeanReference;
+import com.demo.framework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -33,12 +34,15 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     private InstantiationStrategy instantiationStrategy = new CglibSubClassInstantiationStrategy();
 
-    private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
-
     @Override
     protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException {
         Object bean;
         try {
+            // 判断是否返回代理 Bean 对象
+            bean = resolveBeforeInstantiation(beanName, beanDefinition);
+            if (null != bean) {
+                return bean;
+            }
             bean = createBeanInstance(beanName, beanDefinition, args);
             // 给 Bean 填充属性
             applyPropertyValues(beanName, bean, beanDefinition);
@@ -53,6 +57,25 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             addSingleton(beanName, bean);
         }
         return bean;
+    }
+
+    private Object resolveBeforeInstantiation(String beanName, BeanDefinition beanDefinition) {
+        Object bean = applyBeanPostProcessorsBeforeInstantiation(beanDefinition.getBeanClass(), beanName);
+        if (null != bean) {
+            bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
+        }
+        return bean;
+
+    }
+
+    private Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) {
+        for (BeanPostProcessor processor : getBeanPostProcessors()) {
+            if (processor instanceof InstantiationAwareBeanPostProcessor) {
+                Object result = ((InstantiationAwareBeanPostProcessor)processor).postProcessBeforeInstantiation(beanClass, beanName);
+                if (null != result) return result;
+            }
+        }
+        return null;
     }
 
     private void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
@@ -168,7 +191,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     @Override
     public Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName) throws BeansException {
         Object result = existingBean;
-        for (BeanPostProcessor processor : beanPostProcessors) {
+        for (BeanPostProcessor processor : getBeanPostProcessors()) {
             Object current = processor.postProcessBeforeInitialization(result, beanName);
             if (current == null) {
                 return result;
@@ -189,7 +212,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     @Override
     public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName) throws BeansException {
         Object result = existingBean;
-        for (BeanPostProcessor processor : beanPostProcessors) {
+        for (BeanPostProcessor processor : getBeanPostProcessors()) {
             Object current = processor.postProcessAfterInitialization(result, beanName);
             if (current == null) {
                 return result;
@@ -197,14 +220,5 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             result = current;
         }
         return result;
-    }
-
-    /**
-     * 添加 BeanPostProcessor
-     *
-     * @param beanPostProcessor
-     */
-    public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
-        this.beanPostProcessors.add(beanPostProcessor);
     }
 }
