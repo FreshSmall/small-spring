@@ -4,8 +4,6 @@ import com.demo.framework.aop.MethodBeforeAdvice;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
-import java.lang.reflect.Method;
-
 /**
  * @author: yinchao
  * @ClassName: MethodBeforeAdviceInterceptor
@@ -15,7 +13,10 @@ import java.lang.reflect.Method;
  */
 public class MethodBeforeAdviceInterceptor implements MethodInterceptor {
 
-    private MethodBeforeAdvice advice;
+    private  MethodBeforeAdvice advice;
+
+    public MethodBeforeAdviceInterceptor() {
+    }
 
     public MethodBeforeAdviceInterceptor(MethodBeforeAdvice advice) {
         this.advice = advice;
