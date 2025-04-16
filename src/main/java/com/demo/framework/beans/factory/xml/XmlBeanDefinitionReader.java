@@ -10,6 +10,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import cn.hutool.core.util.StrUtil;
 import com.demo.framework.beans.PropertyValue;
 import com.demo.framework.beans.factory.config.BeanReference;
+import com.demo.framework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -86,6 +87,17 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
         // 解析XML文档的bean元素
         Element root = doc.getDocumentElement();
+
+        // 解析 context:component-scan 标签，扫描包中的类并提取相关信息，用于组装 BeanDefinition
+        NodeList componentScanNodeList = root.getElementsByTagName("context:component-scan");
+        if (componentScanNodeList.getLength() > 0) {
+            Element componentScanElement = (Element) componentScanNodeList.item(0);
+            String basePackage = componentScanElement.getAttribute("base-package");
+            if (StrUtil.isEmpty(basePackage)) {
+                throw new BeansException("The value of base-package attribute can not be empty or null");
+            }
+            scanPackage(basePackage);
+        }
         NodeList nl = root.getElementsByTagName("bean");
 
         for (int i = 0; i < nl.getLength(); i++) {
@@ -136,15 +148,21 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
         }
     }
 
-        /**
-         * 将字符串的首字母转换为小写
-         */
-        private String lowerFirst (String str){
-            if (str == null || str.isEmpty()) {
-                return str;
-            }
-            char[] chars = str.toCharArray();
-            chars[0] = Character.toLowerCase(chars[0]);
-            return new String(chars);
+    /**
+     * 将字符串的首字母转换为小写
+     */
+    private String lowerFirst(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
         }
+        char[] chars = str.toCharArray();
+        chars[0] = Character.toLowerCase(chars[0]);
+        return new String(chars);
     }
+
+    private void scanPackage(String scanPath) {
+        String[] basePackages = StrUtil.splitToArray(scanPath, ',');
+        ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(getRegistry());
+        scanner.doScan(basePackages);
+    }
+}

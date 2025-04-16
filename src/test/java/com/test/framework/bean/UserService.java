@@ -1,53 +1,54 @@
 package com.test.framework.bean;
 
-import com.demo.framework.beans.BeansException;
-import com.demo.framework.beans.factory.BeanFactory;
-import com.demo.framework.context.ApplicationContext;
+import com.demo.framework.stereotype.Component;
 
-public class UserService {
+import java.util.Random;
 
-    private String name;
+/**
+* @author: yinchao
+* @ClassName: UserService
+* @Description: 
+* @team wuhan operational dev.
+* @date: 2025/4/14 23:39
+*/
+@Component("userService")
+public class UserService implements IUserService {
 
-    private String uId;
+    private String token;
 
-    private String company;
-    private String location;
+    public String getToken() {
+        return token;
+    }
 
-    private IUserDao userDao;
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public UserService(){
+
+    }
 
     public String queryUserInfo() {
-        return userDao.queryUserName(uId) + ", 公司：" + company + ", 地点：" + location;
+        try {
+            Thread.sleep(new Random(1).nextInt(100));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return "小傅哥，100001，深圳";
     }
 
-    public String getuId() {
-        return uId;
+    public String register(String userName) {
+        try {
+            Thread.sleep(new Random(1).nextInt(100));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return "注册用户：" + userName + " success！";
     }
 
-    public void setuId(String uId) {
-        this.uId = uId;
+    @Override
+    public String toString() {
+        return "UserService#token = { " + token + " }";
     }
 
-    public IUserDao getUserDao() {
-        return userDao;
-    }
-
-    public void setUserDao(IUserDao userDao) {
-        this.userDao = userDao;
-    }
-
-    public String getCompany() {
-        return company;
-    }
-
-    public void setCompany(String company) {
-        this.company = company;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
 }

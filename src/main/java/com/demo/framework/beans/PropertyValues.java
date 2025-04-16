@@ -20,6 +20,10 @@ public class PropertyValues {
         return null;
     }
 
+    public List<PropertyValue> getPropertyValues() {
+        return list;
+    }
+
     public List<PropertyValue> getList() {
         return list;
     }

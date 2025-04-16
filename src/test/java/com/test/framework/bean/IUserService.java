@@ -1,6 +1,4 @@
-package com.test.framework.aop;
-
-import java.util.Random;
+package com.test.framework.bean;
 
 /**
  * @author: yinchao

@@ -1,15 +1,23 @@
 package com.test.framework;
 
+import com.test.framework.bean.IUserService;
 import org.junit.Test;
 
 import com.demo.framework.context.support.ClassPathXmlApplicationContext;
-import com.test.framework.event.CustomEvent;
 
 public class ApiTest {
 
     @Test
-    public void test_aop() {
+    public void test_property() {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
-        applicationContext.publishEvent(new CustomEvent(applicationContext, 10191290090867633L, "成功了1123123！")); 
+        IUserService userService = applicationContext.getBean("userService", IUserService.class);
+        System.out.println("测试结果：" + userService);
+    }
+
+    @Test
+    public void test_scan() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:component-scan.xml");
+        IUserService userService = applicationContext.getBean("userService", IUserService.class);
+        System.out.println("测试结果：" + userService.queryUserInfo());
     }
 }

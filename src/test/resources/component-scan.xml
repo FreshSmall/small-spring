@@ -6,12 +6,6 @@
 	         http://www.springframework.org/schema/beans/spring-beans.xsd
 		 http://www.springframework.org/schema/context">
 
-    <bean class="com.demo.framework.beans.factory.PropertyPlaceholderConfigurer">
-        <property name="location" value="classpath:important.properties"/>
-    </bean>
-
-    <bean id="userService" class="com.test.framework.bean.UserService">
-        <property name="token" value="${token}"/>
-    </bean>
+    <context:component-scan base-package="com.test.framework.bean"/>
 
 </beans>

@@ -71,7 +71,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     private Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) {
         for (BeanPostProcessor processor : getBeanPostProcessors()) {
             if (processor instanceof InstantiationAwareBeanPostProcessor) {
-                Object result = ((InstantiationAwareBeanPostProcessor)processor).postProcessBeforeInstantiation(beanClass, beanName);
+                Object result = ((InstantiationAwareBeanPostProcessor) processor).postProcessBeforeInstantiation(beanClass, beanName);
                 if (null != result) return result;
             }
         }
@@ -131,7 +131,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         }
         // 2. 配置信息 init-method
         String initMethodName = beanDefinition.getInitMethodName();
-        if (!"".equals(initMethodName)) {
+        if (initMethodName!=null && !initMethodName.isEmpty()) {
             try {
                 Method initMethod = beanDefinition.getBeanClass().getMethod(initMethodName);
                 initMethod.invoke(bean);
