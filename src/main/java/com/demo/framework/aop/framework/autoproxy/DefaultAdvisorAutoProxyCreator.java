@@ -41,6 +41,7 @@ public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPos
         }
         Map<String, AspectJExpressionPointcutAdvisor> beansOfType = beanFactory.getBeansOfType(AspectJExpressionPointcutAdvisor.class);
         for (AspectJExpressionPointcutAdvisor advisor : beansOfType.values()) {
+            // 通过 PointCut 来判断 bean 对象是否有切点，从而判断是否使用代理对象
             ClassFilter classFilter = advisor.getPointcut().getClassFilter();
             if (!classFilter.matches(beanClass)) {
                 continue;
