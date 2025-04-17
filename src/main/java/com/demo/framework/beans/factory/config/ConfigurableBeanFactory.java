@@ -1,6 +1,7 @@
 package com.demo.framework.beans.factory.config;
 
 import com.demo.framework.beans.factory.HierarchicalBeanFactory;
+import com.demo.framework.util.StringValueResolver;
 
 /**
  * 可配置的Bean工厂接口
@@ -29,4 +30,20 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
      * @param beanPostProcessor
      */
     void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
+
+
+    /**
+     * Add a String resolver for embedded values such as annotation attributes.
+     * @param valueResolver the String resolver to apply to embedded values
+     * @since 3.0
+     */
+    void addEmbeddedValueResolver(StringValueResolver valueResolver);
+
+    /**
+     * Resolve the given embedded value, e.g. an annotation attribute.
+     * @param value the value to resolve
+     * @return the resolved value (may be the original value as-is)
+     * @since 3.0
+     */
+    String resolveEmbeddedValue(String value);
 }

@@ -1,11 +1,13 @@
 package com.demo.framework.context.annotation;
 
-import cn.hutool.core.util.StrUtil;
+import java.util.Set;
+
+import com.demo.framework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import com.demo.framework.beans.factory.config.BeanDefinition;
 import com.demo.framework.beans.factory.support.BeanDefinitionRegistry;
 import com.demo.framework.stereotype.Component;
 
-import java.util.Set;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * @author: yinchao
@@ -14,7 +16,7 @@ import java.util.Set;
  * @team wuhan operational dev.
  * @date: 2025/4/16 23:01
  */
-public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateComponentProvider{
+public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateComponentProvider {
 
     private BeanDefinitionRegistry registry;
 
@@ -34,12 +36,16 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
                 registry.registerBeanDefinition(determineBeanName(beanDefinition), beanDefinition);
             }
         }
+        // 注册处理注解的 BeanPostProcessor（@Autowired、@Value）
+        registry.registerBeanDefinition("com.demo.framework.context.annotation.internalAutowiredAnnotationProcessor",
+                new BeanDefinition(AutowiredAnnotationBeanPostProcessor.class));
     }
 
     private String resolveBeanScope(BeanDefinition beanDefinition) {
         Class<?> beanClass = beanDefinition.getBeanClass();
         Scope scope = beanClass.getAnnotation(Scope.class);
-        if (null != scope) return scope.value();
+        if (null != scope)
+            return scope.value();
         return StrUtil.EMPTY;
     }
 

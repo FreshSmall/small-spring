@@ -1,6 +1,11 @@
 package com.demo.framework.beans.factory;
 
 import com.demo.framework.beans.BeansException;
+import com.demo.framework.beans.factory.config.BeanDefinition;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Bean工厂接口
@@ -42,4 +47,14 @@ public interface BeanFactory {
      * @throws BeansException
      */
     <T> T getBean(String name, Class<T> requiredType) throws BeansException;
+
+    /**
+     * 根据类型获取Bean对象
+     *x
+     * @param requiredType
+     * @return
+     * @param <T>
+     * @throws BeansException
+     */
+    <T> T getBean(Class<T> requiredType) throws BeansException;
 }

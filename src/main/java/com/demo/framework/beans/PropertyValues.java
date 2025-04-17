@@ -20,8 +20,8 @@ public class PropertyValues {
         return null;
     }
 
-    public List<PropertyValue> getPropertyValues() {
-        return list;
+    public PropertyValue[] getPropertyValues() {
+        return this.list.toArray(new PropertyValue[0]);
     }
 
     public List<PropertyValue> getList() {
