@@ -16,6 +16,7 @@ import com.demo.framework.beans.factory.support.DefaultListableBeanFactory;
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -36,32 +37,6 @@ public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPos
 
     @Override
     public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) throws BeansException {
-        // 判断是否为 aop 代理bean
-        if (isInfrastructureClass(beanClass)) {
-            return null;
-        }
-        Map<String, AspectJExpressionPointcutAdvisor> beansOfType = beanFactory.getBeansOfType(AspectJExpressionPointcutAdvisor.class);
-        for (AspectJExpressionPointcutAdvisor advisor : beansOfType.values()) {
-            // 通过 PointCut 来判断 bean 对象是否有切点，从而判断是否使用代理对象
-            ClassFilter classFilter = advisor.getPointcut().getClassFilter();
-            if (!classFilter.matches(beanClass)) {
-                continue;
-            }
-            // 组装代理信息
-            AdvisedSupport advisedSupport = new AdvisedSupport();
-            TargetSource targetSource;
-            try {
-                targetSource = new TargetSource(beanClass.getDeclaredConstructor().newInstance());
-            } catch (Exception e) {
-                throw new BeansException("Could not instantiate " + beanClass.getName(), e);
-            }
-            advisedSupport.setTargetSource(targetSource);
-            advisedSupport.setMethodInterceptor((MethodInterceptor)advisor.getAdvice());
-            advisedSupport.setMethodMatcher(advisor.getPointcut().getMethodMatcher());
-            advisedSupport.setProxyTargetClass(false);
-            return new ProxyFactory(advisedSupport).getProxy();
-        }
-
         return null;
     }
 
@@ -87,6 +62,27 @@ public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPos
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        if (isInfrastructureClass(bean.getClass())) return bean;
+
+        Collection<AspectJExpressionPointcutAdvisor> advisors = beanFactory.getBeansOfType(AspectJExpressionPointcutAdvisor.class).values();
+
+        for (AspectJExpressionPointcutAdvisor advisor : advisors) {
+            ClassFilter classFilter = advisor.getPointcut().getClassFilter();
+            // 过滤匹配类
+            if (!classFilter.matches(bean.getClass())) continue;
+
+            AdvisedSupport advisedSupport = new AdvisedSupport();
+
+            TargetSource targetSource = new TargetSource(bean);
+            advisedSupport.setTargetSource(targetSource);
+            advisedSupport.setMethodInterceptor((MethodInterceptor) advisor.getAdvice());
+            advisedSupport.setMethodMatcher(advisor.getPointcut().getMethodMatcher());
+            advisedSupport.setProxyTargetClass(false);
+
+            // 返回代理对象
+            return new ProxyFactory(advisedSupport).getProxy();
+        }
+
         return bean;
     }
 }

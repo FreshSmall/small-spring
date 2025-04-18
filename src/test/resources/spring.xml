@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-	         http://www.springframework.org/schema/beans/spring-beans.xsd
-		 http://www.springframework.org/schema/context">
+	         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean class="com.demo.framework.beans.factory.PropertyPlaceholderConfigurer">
-        <property name="location" value="classpath:important.properties"/>
+    <bean id="userService" class="com.test.framework.bean.UserService">
+        <property name="token" value="RejDlI78hu223Opo983Ds"/>
     </bean>
-    <context:component-scan base-package="com.test.framework.bean"/>
 
+    <bean class="com.demo.framework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+
+    <bean id="beforeAdvice" class="com.test.framework.bean.UserServiceBeforeAdvice"/>
+
+    <bean id="methodInterceptor" class="com.demo.framework.aop.framework.adapter.MethodBeforeAdviceInterceptor">
+        <property name="advice" ref="beforeAdvice"/>
+    </bean>
+
+    <bean id="pointcutAdvisor" class="com.demo.framework.aop.aspectj.AspectJExpressionPointcutAdvisor">
+        <property name="expression" value="execution(* com.test.framework.bean.IUserService.*(..))"/>
+        <property name="advice" ref="methodInterceptor"/>
+    </bean>
 
 </beans>

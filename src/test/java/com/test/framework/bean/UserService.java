@@ -40,7 +40,7 @@ public class UserService implements IUserService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return userDao.queryUserName("10001") + "，" + token;
+        return "小傅哥，100001，深圳，" + token;
     }
 
     public String register(String userName) {

@@ -1,4 +1,8 @@
-package com.demo.framework.aop;/**
+package com.demo.framework.aop;
+
+import com.demo.framework.util.ClassUtils;
+
+/**
 * @author: yinchao
 * @ClassName: TargetSource
 * @Description: 
@@ -20,7 +24,9 @@ public class TargetSource {
      * @return the type of targets returned by this {@link TargetSource}
      */
     public Class<?>[] getTargetClass(){
-        return this.target.getClass().getInterfaces();
+        Class<?> clazz = this.target.getClass();
+        clazz = ClassUtils.isCglibProxyClass(clazz) ? clazz.getSuperclass() : clazz;
+        return clazz.getInterfaces();
     }
 
     /**
