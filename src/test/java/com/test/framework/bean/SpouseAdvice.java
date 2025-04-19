@@ -6,14 +6,15 @@ import java.lang.reflect.Method;
 
 /**
  * @author: yinchao
- * @ClassName: UserServiceBeforeAdvice
+ * @ClassName: SpouseAdvice
  * @Description:
  * @team wuhan operational dev.
- * @date: 2025/4/18 23:01
+ * @date: 2025/4/19 23:28
  */
-public class UserServiceBeforeAdvice implements MethodBeforeAdvice {
+public class SpouseAdvice implements MethodBeforeAdvice {
+
     @Override
     public void before(Method method, Object[] args, Object target) throws Throwable {
-        System.out.println("方法已经被执行,method:" + method.getName());
+        System.out.println("关怀小两口(切面)：" + method);
     }
 }

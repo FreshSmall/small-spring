@@ -4,20 +4,28 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 	         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="userService" class="com.test.framework.bean.UserService">
-        <property name="token" value="RejDlI78hu223Opo983Ds"/>
+    <bean id="husband" class="com.test.framework.bean.Husband">
+        <property name="wife" ref="wife"/>
     </bean>
 
+    <bean id="husbandMother" class="com.test.framework.bean.HusbandMother"/>
+
+    <bean id="wife" class="com.test.framework.bean.Wife">
+        <property name="husband" ref="husband"/>
+        <property name="mother" ref="husbandMother"/>
+    </bean>
+
+    <!-- AOP 配置，验证三级缓存 -->
     <bean class="com.demo.framework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 
-    <bean id="beforeAdvice" class="com.test.framework.bean.UserServiceBeforeAdvice"/>
+    <bean id="beforeAdvice" class="com.test.framework.bean.SpouseAdvice"/>
 
     <bean id="methodInterceptor" class="com.demo.framework.aop.framework.adapter.MethodBeforeAdviceInterceptor">
         <property name="advice" ref="beforeAdvice"/>
     </bean>
 
     <bean id="pointcutAdvisor" class="com.demo.framework.aop.aspectj.AspectJExpressionPointcutAdvisor">
-        <property name="expression" value="execution(* com.test.framework.bean.IUserService.*(..))"/>
+        <property name="expression" value="execution(* com.test.framework.bean.Wife.*(..))"/>
         <property name="advice" ref="methodInterceptor"/>
     </bean>
 
