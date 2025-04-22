@@ -7,6 +7,7 @@ import com.demo.framework.beans.factory.FactoryBean;
 import com.demo.framework.beans.factory.config.BeanDefinition;
 import com.demo.framework.beans.factory.config.BeanPostProcessor;
 import com.demo.framework.beans.factory.config.ConfigurableBeanFactory;
+import com.demo.framework.core.convert.ConversionService;
 import com.demo.framework.util.StringValueResolver;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
     private final List<StringValueResolver> embeddedValueResolvers = new ArrayList<>();
 
+    private ConversionService conversionService;
 
     @Override
     public Object getBean(String name) throws BeansException {
@@ -98,6 +100,18 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
         }
         return result;
     }
+
+
+    @Override
+    public void setConversionService(ConversionService conversionService) {
+        this.conversionService = conversionService;
+    }
+
+    @Override
+    public ConversionService getConversionService() {
+        return conversionService;
+    }
+
 
     public ClassLoader getBeanClassLoader() {
         return ClassUtil.getClassLoader();

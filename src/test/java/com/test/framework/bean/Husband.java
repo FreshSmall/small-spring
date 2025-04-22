@@ -1,5 +1,7 @@
 package com.test.framework.bean;
 
+import java.time.LocalDate;
+
 /**
  * @author: yinchao
  * @ClassName: Husband
@@ -9,17 +11,31 @@ package com.test.framework.bean;
  */
 public class Husband {
 
-    private Wife wife;
+    private String wifiName;
 
-    public Wife getWife() {
-        return wife;
+    private LocalDate marriageDate;
+
+    public String getWifiName() {
+        return wifiName;
     }
 
-    public void setWife(Wife wife) {
-        this.wife = wife;
+    public void setWifiName(String wifiName) {
+        this.wifiName = wifiName;
     }
 
-    public String queryWife(){
-        return "Husband.wife";
+    public LocalDate getMarriageDate() {
+        return marriageDate;
+    }
+
+    public void setMarriageDate(LocalDate marriageDate) {
+        this.marriageDate = marriageDate;
+    }
+
+    @Override
+    public String toString() {
+        return "Husband{" +
+                "wifiName='" + wifiName + '\'' +
+                ", marriageDate=" + marriageDate +
+                '}';
     }
 }

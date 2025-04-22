@@ -3,6 +3,7 @@ package com.demo.framework.beans.factory.support;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
+import cn.hutool.core.util.TypeUtil;
 import com.demo.framework.beans.BeansException;
 import com.demo.framework.beans.PropertyValue;
 import com.demo.framework.beans.PropertyValues;
@@ -19,6 +20,7 @@ import com.demo.framework.beans.factory.config.BeanReference;
 import com.demo.framework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.demo.framework.core.convert.ConversionService;
 
 /**
  * 抽象的自动装配Bean工厂
@@ -229,6 +231,15 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
                 if (value instanceof BeanReference) {
                     BeanReference beanReference = (BeanReference) value;
                     value = getBean(beanReference.getBeanName());
+                } else {
+                    Class<?> sourceType = value.getClass();
+                    Class<?> targetType = (Class<?>) TypeUtil.getFieldType(bean.getClass(), name);
+                    ConversionService conversionService = getConversionService();
+                    if (conversionService != null) {
+                        if (conversionService.canConvert(sourceType, targetType)) {
+                            value = conversionService.convert(value, targetType);
+                        }
+                    }
                 }
                 BeanUtil.setFieldValue(bean, name, value);
             }
