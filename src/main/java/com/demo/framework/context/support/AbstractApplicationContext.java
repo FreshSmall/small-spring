@@ -14,6 +14,7 @@ import com.demo.framework.context.event.ApplicationEventMulticaster;
 import com.demo.framework.context.event.ContextClosedEvent;
 import com.demo.framework.context.event.ContextRefreshedEvent;
 import com.demo.framework.context.event.SimpleApplicationEventMulticaster;
+import com.demo.framework.core.convert.ConversionService;
 import com.demo.framework.core.io.DefaultResourceLoader;
 
 /**
@@ -56,7 +57,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
         registerBeanPostProcessors(beanFactory);
 
         // 6. 提前实例化单例 Bean 对象
-        beanFactory.preInstantiateSingletons();
+        // beanFactory.preInstantiateSingletons();
 
         // 7.初始化事件发布器
         initApplicationEventMulticaster();
@@ -64,8 +65,25 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
         // 8.注册事件监听器
         registerListeners();
 
+        // 8. 设置类型转换器、提前实例化单例Bean对象
+        finishBeanFactoryInitialization(beanFactory);
+
         // 9.初始化非延迟加载的单例 Bean
         finishRefresh();
+    }
+
+    // 设置类型转换器、提前实例化单例Bean对象
+    protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory) {
+        // 设置类型转换器
+        if (beanFactory.containsBean("conversionService")) {
+            Object conversionService = beanFactory.getBean("conversionService");
+            if (conversionService instanceof ConversionService) {
+                beanFactory.setConversionService((ConversionService) conversionService);
+            }
+        }
+
+        // 提前实例化单例Bean对象
+        beanFactory.preInstantiateSingletons();
     }
 
     private void finishRefresh() {
@@ -156,6 +174,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
     @Override
     public <T> Map<String, T> getBeansOfType(Class<T> type) throws BeansException {
         return getBeanFactory().getBeansOfType(type);
+    }
+
+    @Override
+    public boolean containsBean(String name) {
+        return getBeanFactory().containsBean(name);
     }
 
     /**
